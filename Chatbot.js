@@ -5,7 +5,8 @@ const fs = require('fs');
 const client = new Client({
   puppeteer: {
     headless: true, // ou false para debug visual
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: '/snap/bin/chromium'
   }
 });
 
