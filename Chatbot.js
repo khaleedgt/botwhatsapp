@@ -1,11 +1,12 @@
-const browser = await puppeteer.launch({
-  args: ['--no-sandbox', '--disable-setuid-sandbox'],
-});
-
 const qrcode = require('qrcode-terminal');
-const { Client, Buttons, List, MessageMedia } = require('whatsapp-web.js');
+const { Client, MessageMedia } = require('whatsapp-web.js');
 const fs = require('fs');
-const client = new Client();
+
+const client = new Client({
+  puppeteer: {
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  }
+});
 
 client.on('qr', qr => {
     qrcode.generate(qr, { small: true });
@@ -17,15 +18,13 @@ client.on('ready', () => {
 
 client.initialize();
 
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
 const conversas = {};
 const media = MessageMedia.fromFilePath('./imagem.jpeg');
 
 client.on('message', async msg => {
     const numero = msg.from;
 
-    // ❌ Ignora mensagens de grupos
+    // Ignorar grupos
     if (numero.includes('@g.us')) return;
 
     const body = msg.body.toLowerCase();
